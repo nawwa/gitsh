@@ -5,7 +5,8 @@
 
 
 NB_PARAM=$#
-LOGIN="pezon_v" #Change it for your <blih> cmd
+LOGIN="pezon_v"
+SERVER="git.epitech.eu"
 MOULINETTE="ramassage-tek"
 
 print_usage()
@@ -49,11 +50,11 @@ me_clone()
 	    _err "clone"
 	fi
 	if [ "$2" == "" ];then
-	    git clone $LOGIN@git.epitech.eu:/$LOGIN/$1
+	    git clone $LOGIN@$SERVER:/$LOGIN/$1
 	    echo "Clone done"
 	    return 0
 	fi
-	git clone $LOGIN@git.epitech.eu:/$1/$2
+	git clone $LOGIN@$SERVER:/$1/$2
 	echo "Clone done"
 	return 0
     fi
@@ -90,8 +91,8 @@ me_merge()
     if [ "$1" == "" ];then
 	_err "merge"
     fi 
-    git add -A
-    git commit -m "$1"
+    git add -A &&
+    git commit -m "$1" &&
     git pull origin master
     echo -n "Pull ok ?"
     echo -n " y/n : "
@@ -154,13 +155,15 @@ me_init()
 	_err "init"
     fi
     git init &&
-    blih -u $LOGIN repository create "$1"
-    git remote add origin "$LOGIN@git.epitech.eu:/$LOGIN/$1"
-    blih -u $LOGIN repository setacl "$1" "$MOULINETTE" "r"
-    blih -u $LOGIN repository list
-    blih -u $LOGIN repository getacl "$1"
-    touch first_commit
-    me_push "First commit"
+    blih -u $LOGIN repository create "$1" &&
+    git remote add origin "$LOGIN@$SERVER:/$LOGIN/$1"
+    if [ "$MOULINETTE" != "" ];then
+	blih -u $LOGIN repository setacl "$1" "$MOULINETTE" "r" &&
+	blih -u $LOGIN repository list &&
+	blih -u $LOGIN repository getacl "$1"
+    fi
+    touch first_commit &&
+    me_push "First commit" &&
     echo
     echo "Repository $1 created."
     return 0
