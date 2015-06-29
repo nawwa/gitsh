@@ -18,10 +18,10 @@ print_usage()
 	   -p(push) <commit>
 	   -g(pull)
 	   -m(merge) <commit>
-	   -i(init)
+	   -i(init) <repo>
 	   -l(blih list)
 	   -s(acl) <repo> <user> [acl]
-	   -gs(getacl) ";
+	   -gs(getacl) <repo>";
     echo
 }
 
@@ -87,6 +87,9 @@ me_list()
 
 me_merge()
 {
+    if [ "$1" == "" ];then
+	_err "merge"
+    fi 
     git add -A
     git commit -m "$1"
     git pull origin master
