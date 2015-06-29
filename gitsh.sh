@@ -5,7 +5,7 @@
 
 
 NB_PARAM=$#
-LOGIN="pezon_v" #Change it for your <clone> cmd
+LOGIN="pezon_v" #Change it for your <blih> cmd
 MOULINETTE="ramassage-tek"
 
 print_usage()
@@ -17,7 +17,7 @@ print_usage()
 	   -c(clone) [login] <repository>
 	   -p(push) <commit>
 	   -g(pull)
-	   -m(merge)
+	   -m(merge) <commit>
 	   -i(init)
 	   -l(blih list)
 	   -s(acl) <repo> <user> [acl]
@@ -67,6 +67,7 @@ me_push()
     fi
     git add -A
     git commit -m "$1"
+    git pull
     git push origin master
     echo "Push done"
     return 0
@@ -80,20 +81,20 @@ me_pull()
 
 me_list()
 {
-    blih repository list
+    blih -u $LOGIN -u repository list
     echo "Pull done"
 }
 
 me_merge()
 {
     git add -A
-    git commit -m "merge"
+    git commit -m "$1"
     git pull origin master
     echo -n "Pull ok ?"
     echo -n " y/n : "
     read on
     case "$on" in
-	y | Y ) git push;echo "Merge done";;
+	y | Y ) git push;echo "Commit done";;
 	n | N ) echo "Try again";;
 	* ) echo "Retry ;)";;
     esac
@@ -109,14 +110,14 @@ me_setacl()
 	_err "setacl"
     fi
     if [ "$3" == "" ];then
-	blih repository setacl $1 $2 "rw"
+	blih -u $LOGIN repository setacl $1 $2 "rw"
 	echo "Setacl done"
-	blih repository getacl $1
+	blih -u $LOGIN repository getacl $1
 	return 0
     fi
-    blih repository setacl $1 $2 $3
+    blih -u $LOGIN repository setacl $1 $2 $3
     echo "Setacl done"
-    blih repository getacl $1
+    blih -u $LOGIN repository getacl $1
 }
 
 me_delete()
@@ -128,7 +129,7 @@ me_delete()
     echo -n " y/n : "
     read on
     case "$on" in
-	y | Y ) blih repository delete "$1";echo "Delete done";;
+	y | Y ) blih -u $LOGIN repository delete "$1";echo "Delete done";;
 	n | N ) echo "Delete failed";;
 	* ) echo "Retry ;)";;
     esac
@@ -140,7 +141,7 @@ me_getacl()
     if [ "$1" == "" ];then
 	_err "getacl"
     fi
-    blih repository getacl "$1"
+    blih -u $LOGIN repository getacl "$1"
     return 0
 }
 
@@ -150,11 +151,11 @@ me_init()
 	_err "init"
     fi
     git init &&
-    blih repository create "$1"
+    blih -u $LOGIN repository create "$1"
     git remote add origin "$LOGIN@git.epitech.eu:/$LOGIN/$1"
-    blih repository setacl "$1" "$MOULINETTE" "r"
-    blih repository list
-    blih repository getacl "$1"
+    blih -u $LOGIN repository setacl "$1" "$MOULINETTE" "r"
+    blih -u $LOGIN repository list
+    blih -u $LOGIN repository getacl "$1"
     touch first_commit
     me_push "First commit"
     echo
@@ -181,7 +182,9 @@ parse_param()
 	elif [ "$opt" == '-l' ]; then
 	    me_list
 	elif [ "$opt" == '-m' ]; then
-	    me_merge
+	    shift
+	    arg1=$1
+	    me_merge "$arg1"
 	elif [ "$opt" == '-d' ]; then
 	    shift
 	    arg1=$1
