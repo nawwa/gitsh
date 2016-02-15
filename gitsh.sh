@@ -82,8 +82,8 @@ me_pull()
 
 me_list()
 {
-    blih -u $LOGIN -u repository list
-    echo "Pull done"
+    blih -u $LOGIN -u repository list &&
+    echo "List done"
 }
 
 me_merge()
