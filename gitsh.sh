@@ -8,6 +8,7 @@ NB_PARAM=$#
 LOGIN="pezon_v"
 SERVER="git.epitech.eu"
 MOULINETTE="ramassage-tek"
+SSL="true"
 
 print_usage()
 {
@@ -15,6 +16,7 @@ print_usage()
     figlet "GIT SCRIPT"
     echo
     echo "./gitsh
+	   -SSL(verify) [true/false]
 	   -c(clone) [login] <repository>
 	   -p(push) <commit>
 	   -g(pull)
@@ -82,7 +84,7 @@ me_pull()
 
 me_list()
 {
-    blih -u $LOGIN -u repository list
+    blih -u $LOGIN repository list
     echo "Pull done"
 }
 
@@ -211,6 +213,9 @@ parse_param()
 	    shift
 	    arg1=$1
 	    me_getacl "$arg1"
+	elif [ "$opt" == '-SSL' ]; then
+	    shift
+	    SSL=$1
 	fi
 	shift
     done
