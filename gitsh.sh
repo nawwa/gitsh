@@ -52,11 +52,11 @@ me_clone()
 	    _err "clone"
 	fi
 	if [ "$2" == "" ];then
-	    git clone $LOGIN@$SERVER:/$LOGIN/$1
+	    git clone $LOGIN@$SERVER:/$LOGIN/$1 &&
 	    echo "Clone done"
 	    return 0
 	fi
-	git clone $LOGIN@$SERVER:/$1/$2
+	git clone $LOGIN@$SERVER:/$1/$2 &&
 	echo "Clone done"
 	return 0
     fi
@@ -68,24 +68,24 @@ me_push()
     if [ "$1" == "" ];then
 	_err "push"
     fi
-    git add -A
-    git commit -m "$1"
-    git pull
-    git push origin master
+    git add -A &&
+    git commit -m "$1" &&
+    git pull &&
+    git push origin master &&
     echo "Push done"
     return 0
 }
 
 me_pull()
 {
-    git pull origin master
+    git pull origin master && 
     echo "Pull done"
 }
 
 me_list()
 {
-    blih -u $LOGIN repository list
-    echo "Pull done"
+    blih -u $LOGIN repository list &&
+    echo "List done"
 }
 
 me_merge()
@@ -116,14 +116,15 @@ me_setacl()
 	_err "setacl"
     fi
     if [ "$3" == "" ];then
-	blih -u $LOGIN repository setacl $1 $2 "rw"
-	echo "Setacl done"
-	blih -u $LOGIN repository getacl $1
+	blih -u $LOGIN repository setacl $1 $2 "rw" &&
+	echo "Setacl done" &&
+	blih -u $LOGIN repository getacl $1 &&
 	return 0
     fi
-    blih -u $LOGIN repository setacl $1 $2 $3
+    blih -u $LOGIN repository setacl $1 $2 $3 &&
     echo "Setacl done"
-    blih -u $LOGIN repository getacl $1
+    blih -u $LOGIN repository getacl $1 
+    return 0
 }
 
 me_delete()
@@ -164,7 +165,7 @@ me_init()
 	blih -u $LOGIN repository list &&
 	blih -u $LOGIN repository getacl "$1"
     fi
-    touch first_commit &&
+    echo "Readme" >> README.md &&
     me_push "First commit" &&
     echo
     echo "Repository $1 created."
